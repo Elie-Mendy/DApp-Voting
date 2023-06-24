@@ -1,18 +1,28 @@
-import React from "react";
-import { ChakraProvider, Heading } from "@chakra-ui/react";
+import { useEffect, useState } from "react";
+
+// Voting Contract Provider
+import { VotingContractProvider } from "@/providers/VotingContractProvider";
+
+// Chakra UI provider
+import { ChakraProvider } from "@chakra-ui/react";
+// layout
+import MainLayout from "@/layouts/MainLayout";
+
+// Rainbowkit
 import "@rainbow-me/rainbowkit/styles.css";
 
-import { getDefaultWallets, RainbowKitProvider } from "@rainbow-me/rainbowkit";
+import { getDefaultWallets, RainbowKitProvider, lightTheme,} from "@rainbow-me/rainbowkit";
+
+// Wagmi provider
 import { configureChains, createConfig, WagmiConfig } from "wagmi";
-import { mainnet, polygon, optimism, arbitrum, zora } from "wagmi/chains";
+import { mainnet, polygon, optimism, arbitrum, hardhat } from "wagmi/chains";
 import { alchemyProvider } from "wagmi/providers/alchemy";
 import { publicProvider } from "wagmi/providers/public";
 
-import { ConnectButton } from "@rainbow-me/rainbowkit";
-
+// wagmi config
 const { chains, publicClient } = configureChains(
-    [mainnet, polygon, optimism, arbitrum, zora],
-    [alchemyProvider({ apiKey: process.env.ALCHEMY_ID }), publicProvider()]
+    [mainnet, polygon, optimism, arbitrum, hardhat],
+    [publicProvider()]
 );
 
 const { connectors } = getDefaultWallets({
@@ -27,18 +37,31 @@ const wagmiConfig = createConfig({
     publicClient,
 });
 
-function App() {
+export default function App({ Component, pageProps }) {
+    const [mounted, setMounted] = useState(false);
+    useEffect(() => setMounted(true), []);
     return (
-        <WagmiConfig config={wagmiConfig}>
-            <RainbowKitProvider chains={chains}>
-                <ChakraProvider>
-                    <Heading>
-                        App <ConnectButton />
-                    </Heading>
-                </ChakraProvider>
-            </RainbowKitProvider>
-        </WagmiConfig>
+        <ChakraProvider>
+            <WagmiConfig config={wagmiConfig}>
+                <RainbowKitProvider
+                    chains={chains}
+                    theme={{
+                        lightMode: lightTheme({
+                            accentColor: "#2b6cb0",
+                            overlayBlur: "small",
+                            borderRadius: "large",
+                        }),
+                    }}
+                >
+                    {mounted && (
+                        <VotingContractProvider>
+                            <MainLayout>
+                                <Component {...pageProps} />
+                            </MainLayout>
+                        </VotingContractProvider>
+                    )}
+                </RainbowKitProvider>
+            </WagmiConfig>
+        </ChakraProvider>
     );
 }
-
-export default App;
