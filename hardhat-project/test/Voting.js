@@ -13,7 +13,7 @@ describe("Voting", function () {
             // Before run 1 time for test * storage default
             before(async () => {
                 // Get Contract
-                const Voting = await ethers.getContractFactory("Voting");
+                const Voting = await ethers.getContractFactory("VotingV2");
                 // Deploy Contract
                 voting = await Voting.deploy();
                 voting.deployed();
