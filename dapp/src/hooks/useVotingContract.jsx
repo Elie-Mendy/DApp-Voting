@@ -7,6 +7,7 @@ import {
     prepareWriteContract,
     writeContract,
     readContract,
+    watchContractEvent,
 } from "@wagmi/core";
 import { useAccount, useNetwork } from "wagmi";
 import { isAddress } from "viem";
@@ -15,7 +16,7 @@ import { hardhat } from "viem/chains";
 
 import { useError } from "@/hooks/useError";
 
-import contracts from "@/config/contracts.json"
+import contracts from "@/config/contracts.json";
 
 const client = createPublicClient({
     chain: hardhat,
@@ -23,7 +24,7 @@ const client = createPublicClient({
 });
 
 export function useVotingContract() {
-    const { isConnected, address } = useAccount();
+    const { isConnected, address, activeConnector } = useAccount();
     const { chain } = useNetwork();
     const { setError } = useError();
     const toast = useToast();
@@ -36,8 +37,8 @@ export function useVotingContract() {
     const [hasVoted, setHasVoted] = useState(false);
     const [winningProposalID, setWinningProposalID] = useState(null);
     const [workflowStatus, setWorkflowStatus] = useState(null);
-    const [votersLogs, setVotersLogs] = useState([]);
     const [proposalsLogs, setProposalsLogs] = useState([]);
+    const [votersLogs, setVotersLogs] = useState([]);
     const [votesLogs, setVotesLogs] = useState([]);
     const [workflowStatusChangeLogs, setWorkflowStatusChangeLogs] = useState(
         []
@@ -62,7 +63,7 @@ export function useVotingContract() {
             : null;
         const winProposalID = await voting.read.winningProposalID();
         const wfStatus = await voting.read.workflowStatus();
-        
+
         // Set state hook
         setWinningProposalID(winProposalID.toString());
         setWorkflowStatus(wfStatus);
@@ -72,10 +73,12 @@ export function useVotingContract() {
     };
 
     useEffect(() => {
+        console.log("useVotingContract effect !!");
         if (!isConnected) return;
         try {
             loadContract();
             fetchData();
+            setUpListeners();
         } catch (error) {
             toast({
                 title: "Error Contract !",
@@ -169,8 +172,7 @@ export function useVotingContract() {
             setError(err.message);
         }
     };
-
-    const getVoter = async (_address, logError=false) => {
+    const getVoter = async (_address, logError = false) => {
         if (!_address) return;
         try {
             const data = await readContract({
@@ -229,7 +231,57 @@ export function useVotingContract() {
         }
     };
 
-    // Events listeners
+    function setUpListeners() {
+        // event WorkflowStatusChange
+        watchContractEvent(
+            {
+                address: contracts.voting.address,
+                abi: contracts.voting.abi,
+                eventName: "WorkflowStatusChange",
+            },
+            (log) => {
+                loadContract();
+            }
+        );
+
+        // event VoterRegistered
+        watchContractEvent(
+            {
+                address: contracts.voting.address,
+                abi: contracts.voting.abi,
+                eventName: "VoterRegistered",
+            },
+            (log) => {
+                fetchData();
+            }
+        );
+
+        // event ProposalRegistered
+        watchContractEvent(
+            {
+                address: contracts.voting.address,
+                abi: contracts.voting.abi,
+                eventName: "ProposalRegistered",
+            },
+            (log) => {
+                fetchData();
+            }
+        );
+
+        // event Voted
+        watchContractEvent(
+            {
+                address: contracts.voting.address,
+                abi: contracts.voting.abi,
+                eventName: "Voted",
+            },
+            (log) => {
+                fetchData();
+            }
+        );
+    }
+
+    // Fetch data
     const fetchData = async () => {
         // voters
         const VoterRegisteredLogs = await client.getLogs({
@@ -240,22 +292,30 @@ export function useVotingContract() {
         const processedVoters = await Promise.all(
             VoterRegisteredLogs.map(async (log) => {
                 const result = await getVoter(log.args.voterAddress);
-                return {address: log.args.voterAddress, ...result}
+                return { address: log.args.voterAddress, ...result };
             })
         );
-        setVotersTableData(processedVoters.map((voter) => ({
+        setVotersTableData(
+            processedVoters.map((voter) => ({
                 address: voter.address,
                 hasVoted: voter.hasVoted,
                 votedProposalId: voter.votedProposalId.toString(),
             }))
         );
         setVotersLogs(VoterRegisteredLogs.map((log) => log.args.voterAddress));
-        
-        // current user
-        const isRegistered = processedVoters.filter(voter => voter.address == address)
-        setIsVoter(isRegistered.length > 0) 
 
-        
+        // current user
+        const parsedVoters = processedVoters.filter(
+            (voter) => voter.address == address
+        );
+        if (parsedVoters.length > 0) {
+            setIsVoter(parsedVoters[0].isRegistered);
+            setHasVoted(parsedVoters[0].hasVoted);
+        } else {
+            setIsVoter(false);
+            setHasVoted(false);
+        }
+
         // proposals
         const ProposalsLogs = await client.getLogs({
             event: parseAbiItem("event ProposalRegistered(uint proposalId)"),
@@ -265,7 +325,7 @@ export function useVotingContract() {
         const processedProposals = await Promise.all(
             ProposalsLogs.map(async (log) => {
                 const result = await getOneProposal(log.args.proposalId);
-                return {id: log.args.proposalId, ...result};
+                return { id: log.args.proposalId, ...result };
             })
         );
         setProposalsTableData(

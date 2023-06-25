@@ -130,7 +130,7 @@ const WorkflowStatusInfo = () => {
     }, [workflowStatus]);
 
     return (
-        <Stack w={"25%"}>
+        <Stack w={{base: "100%", lg:"25%"}}>
             <Heading color={themeColor}>{workflowStatusText}</Heading>
             {actionPannel}
             {infoCard}

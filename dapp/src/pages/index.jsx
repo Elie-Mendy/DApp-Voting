@@ -34,7 +34,7 @@ const index = () => {
                 {isVoter || isOwner ? (
                     <>
                         <WorkflowStatusInfo />
-                        <Tabs w={"95%"}>
+                        <Tabs w={{base: "100%", lg:"95%"}}>
                             <TabList>
                                 <Tab>Proposals</Tab>
                                 <Tab>Voters</Tab>
