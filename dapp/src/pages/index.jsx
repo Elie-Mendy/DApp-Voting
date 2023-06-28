@@ -17,7 +17,7 @@ import {
 import { useContext } from "react";
 import WorkflowStatusInfo from "@/components/WorkflowStatusInfo";
 
-const index = () => {
+const Index = () => {
     const themeColor = useColorModeValue("blue.700", "orange.300");
     const { isVoter, isOwner } = useContext(VotingContractContext);
 
@@ -52,10 +52,10 @@ const index = () => {
                 ) : (
                     <Stack>
                         <Heading color={themeColor}>
-                            You're not a member of the organisation.
+                            You are not a member of the organisation.
                         </Heading>
                         <Text>
-                            Consequently you can't access to the private
+                            Consequently you can not access to the private;
                             information
                         </Text>
                     </Stack>
@@ -65,4 +65,4 @@ const index = () => {
     );
 };
 
-export default index;
+export default Index;

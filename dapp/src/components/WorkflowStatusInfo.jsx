@@ -27,7 +27,7 @@ const WorkflowStatusInfo = () => {
                         <Stack>
                             <Text>
                                 The Owner has not started the proposal
-                                registration session. You'll be notified when
+                                registration session. You will be notified when
                                 the session is open.
                             </Text>
                         </Stack>
@@ -47,7 +47,7 @@ const WorkflowStatusInfo = () => {
                             <Text>
                                 The Owner Started the registration proposal
                                 session. You can now submit proposals that will
-                                be voted by other organisation's members.
+                                be voted by other members of the organisation.
                             </Text>
                             <Text>
                                 Remember that the data will remains on the
@@ -71,8 +71,8 @@ const WorkflowStatusInfo = () => {
                                 proposals.
                             </Text>
                             <Text>
-                                At the moment the voting session is open, You'll
-                                be able to vote for the one you prefer. You'll
+                                At the moment the voting session is open, You will
+                                be able to vote for the one you prefer. You will
                                 be notified when the voting session is open.
                             </Text>
                         </Stack>
@@ -127,7 +127,7 @@ const WorkflowStatusInfo = () => {
 
     useEffect(() => {
         setUpWorkflowStatusInfo();
-    }, [workflowStatus]);
+    }, [workflowStatus, setUpWorkflowStatusInfo]);
 
     return (
         <Stack w={{base: "100%", lg:"25%"}}>

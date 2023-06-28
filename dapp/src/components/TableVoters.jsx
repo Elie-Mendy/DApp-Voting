@@ -31,8 +31,8 @@ const TableVoters = () => {
             </Thead>
             <Tbody>
                 {votersTableData &&
-                    votersTableData.map((voter) => (
-                        <Tr>
+                    votersTableData.map((voter, idx) => (
+                        <Tr key={idx}>
                             <Td>{voter.address}</Td>
                             <Td>
                                 {voter.hasVoted ? (

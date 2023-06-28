@@ -51,8 +51,8 @@ const TableProposals = () => {
             </Thead>
             <Tbody>
                 {proposalsTableData &&
-                    proposalsTableData.map((proposal) => (
-                        <Tr>
+                    proposalsTableData.map((proposal, idx) => (
+                        <Tr key={idx}>
                             <Td>
                                 {proposal.id}{" "}
                                 {winningProposalID === proposal.id && (

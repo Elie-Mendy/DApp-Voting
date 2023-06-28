@@ -26,7 +26,7 @@ export const useNotif = () => {
                 position: "top-right",
                 isClosable: true,
             });
-    }, [info, error]);
+    }, [info, error, toast]);
 
     return {
         error,

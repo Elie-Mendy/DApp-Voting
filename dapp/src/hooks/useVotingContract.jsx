@@ -90,7 +90,15 @@ export function useVotingContract() {
                 isClosable: true,
             });
         }
-    }, [isConnected, address, chain?.id]);
+    }, [
+        isConnected,
+        address,
+        chain?.id,
+        fetchData,
+        loadContract,
+        setUpListeners,
+        toast,
+    ]);
 
     // Admin
     const addVoter = async (_address) => {
@@ -295,7 +303,9 @@ export function useVotingContract() {
         // voters
         try {
             const VoterRegisteredLogs = await client.getLogs({
-                event: parseAbiItem("event VoterRegistered(address voterAddress)"),
+                event: parseAbiItem(
+                    "event VoterRegistered(address voterAddress)"
+                ),
                 fromBlock: 0n,
                 toBlock: 1000n,
             });
@@ -312,7 +322,9 @@ export function useVotingContract() {
                     votedProposalId: voter.votedProposalId.toString(),
                 }))
             );
-            setVotersLogs(VoterRegisteredLogs.map((log) => log.args.voterAddress));
+            setVotersLogs(
+                VoterRegisteredLogs.map((log) => log.args.voterAddress)
+            );
 
             // current user
             const parsedVoters = processedVoters.filter(
@@ -329,10 +341,6 @@ export function useVotingContract() {
             console.log(err);
             setError(err.message);
         }
-
-        
-
-        
 
         // proposals
         const ProposalsLogs = await client.getLogs({

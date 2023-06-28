@@ -80,7 +80,7 @@ const AdminDashboard = () => {
 
     useEffect(() => {
         setUpWorkflowStatusFeatures();
-    }, [workflowStatus]);
+    }, [workflowStatus, setUpWorkflowStatusFeatures]);
     return (
         <>
             <Flex

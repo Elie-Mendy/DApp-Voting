@@ -59,7 +59,7 @@ function RegistrationModal() {
                     <ModalCloseButton />
                     <ModalBody>
                         <FormControl>
-                            <FormLabel>Voter's address</FormLabel>
+                            <FormLabel>Voter address</FormLabel>
                             <Input placeholder="0x..." onChange={(e) => setVoterAddress(e.target.value)}/>
                         </FormControl>
                         <Accordion allowMultiple>
@@ -71,7 +71,7 @@ function RegistrationModal() {
                                             flex="1"
                                             textAlign="cennter"
                                         >
-                                            <Image src="https://plugins.jetbrains.com/files/18551/349727/icon/pluginIcon.svg" />
+                                            <Image src="https://plugins.jetbrains.com/files/18551/349727/icon/pluginIcon.svg" alt="hardhat logo"/>
                                         </Box>
                                         <AccordionIcon />
                                     </AccordionButton>
