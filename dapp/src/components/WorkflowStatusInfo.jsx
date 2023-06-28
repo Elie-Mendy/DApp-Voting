@@ -6,7 +6,7 @@ import {
     Text,
     useColorModeValue,
 } from "@chakra-ui/react";
-import { useContext, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import ProposalModal from "./ProposalModal";
 
 const WorkflowStatusInfo = () => {
@@ -18,7 +18,7 @@ const WorkflowStatusInfo = () => {
     const [infoCard, setInfoCard] = useState(<></>);
     const [workflowStatusText, setWorkflowStatusText] = useState("");
 
-    const setUpWorkflowStatusInfo = async () => {
+    const setUpWorkflowStatusInfo = useCallback(async() => {
         switch (workflowStatus) {
             case 0:
                 setWorkflowStatusText("Voter Registration");
@@ -123,11 +123,11 @@ const WorkflowStatusInfo = () => {
             default:
                 break;
         }
-    };
+    }, [workflowStatus, winningProposalID]);
 
     useEffect(() => {
         setUpWorkflowStatusInfo();
-    }, [workflowStatus, setUpWorkflowStatusInfo]);
+    }, [setUpWorkflowStatusInfo]);
 
     return (
         <Stack w={{base: "100%", lg:"25%"}}>

@@ -9,7 +9,7 @@ import {
     Stack,
     useColorModeValue,
 } from "@chakra-ui/react";
-import { useContext, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import ContractData from "@/components/ContractData";
 import RegistrationModal from "@/components/admin/RegistrationModal";
 
@@ -26,7 +26,7 @@ const AdminDashboard = () => {
         tallyVotes,
     } = useContext(VotingContractAdminContext);
 
-    const setUpWorkflowStatusFeatures = async () => {
+    const setUpWorkflowStatusFeatures = useCallback(async () => {
         switch (workflowStatus) {
             case 0:
                 setWorkflowStatusText("Voter Registration");
@@ -76,11 +76,19 @@ const AdminDashboard = () => {
             default:
                 break;
         }
-    };
+    }, [
+        endProposalsRegistering,
+        endVotingSession,
+        startProposalsRegistering,
+        startVotingSession,
+        tallyVotes,
+        workflowStatus,
+    ]);
 
     useEffect(() => {
         setUpWorkflowStatusFeatures();
-    }, [workflowStatus, setUpWorkflowStatusFeatures]);
+    }, [setUpWorkflowStatusFeatures]);
+
     return (
         <>
             <Flex

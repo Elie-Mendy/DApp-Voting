@@ -15,19 +15,19 @@ import { getDefaultWallets, RainbowKitProvider, lightTheme,} from "@rainbow-me/r
 
 // Wagmi provider
 import { configureChains, createConfig, WagmiConfig } from "wagmi";
-import { mainnet, polygon, optimism, arbitrum, hardhat } from "wagmi/chains";
+import { mainnet, sepolia, hardhat } from "wagmi/chains";
 import { alchemyProvider } from "wagmi/providers/alchemy";
 import { publicProvider } from "wagmi/providers/public";
 
 // wagmi config
 const { chains, publicClient } = configureChains(
-    [mainnet, polygon, optimism, arbitrum, hardhat],
+    [mainnet, sepolia, hardhat],
     [publicProvider()]
 );
 
 const { connectors } = getDefaultWallets({
-    appName: "My RainbowKit App",
-    projectId: "YOUR_PROJECT_ID",
+    appName: "Voting Dapp",
+    projectId: process.env.NEXT_PUBLIC_INFURA_PROJECT_ID,
     chains,
 });
 

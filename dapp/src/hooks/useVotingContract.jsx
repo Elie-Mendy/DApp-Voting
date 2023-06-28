@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useToast } from "@chakra-ui/react";
 
 import {
@@ -50,7 +50,7 @@ export function useVotingContract() {
     const [proposalsTableData, setProposalsTableData] = useState([]);
 
     // Load contract
-    const loadContract = async () => {
+    const loadContract = useCallback(async () => {
         // get contract with provider connected
         const walletClient = await getWalletClient();
         const voting = getContract({
@@ -71,34 +71,7 @@ export function useVotingContract() {
         setContract(voting);
         setOwner(owner);
         setIsOwner(owner === address);
-    };
-
-    useEffect(() => {
-        console.log("useVotingContract effect !!");
-        if (!isConnected) return;
-        try {
-            loadContract();
-            fetchData();
-            setUpListeners();
-        } catch (error) {
-            toast({
-                title: "Error Contract !",
-                description: "Impossible de trouver le contract.",
-                status: "error",
-                duration: 9000,
-                position: "top-right",
-                isClosable: true,
-            });
-        }
-    }, [
-        isConnected,
-        address,
-        chain?.id,
-        fetchData,
-        loadContract,
-        setUpListeners,
-        toast,
-    ]);
+    }, [address]);
 
     // Admin
     const addVoter = async (_address) => {
@@ -187,34 +160,40 @@ export function useVotingContract() {
             setError(err.message);
         }
     };
-    const getVoter = async (_address, logError = false) => {
-        if (!_address) return;
-        try {
-            const data = await readContract({
-                address: contractAddress,
-                abi: contracts.voting.abi,
-                functionName: "getVoter",
-                args: [String(_address)],
-            });
-            return data;
-        } catch (err) {
-            logError && setError(err.message);
-        }
-    };
-    const getOneProposal = async (_id) => {
-        if (Number(_id) < 0) return;
-        try {
-            const data = await readContract({
-                address: contractAddress,
-                abi: contracts.voting.abi,
-                functionName: "getOneProposal",
-                args: [Number(_id)],
-            });
-            return data;
-        } catch (err) {
-            setError(err.message);
-        }
-    };
+    const getVoter = useCallback(
+        async (_address, logError = false) => {
+            if (!_address) return;
+            try {
+                const data = await readContract({
+                    address: contractAddress,
+                    abi: contracts.voting.abi,
+                    functionName: "getVoter",
+                    args: [String(_address)],
+                });
+                return data;
+            } catch (err) {
+                logError && setError(err.message);
+            }
+        },
+        [setError]
+    );
+    const getOneProposal = useCallback(
+        async (_id) => {
+            if (Number(_id) < 0) return;
+            try {
+                const data = await readContract({
+                    address: contractAddress,
+                    abi: contracts.voting.abi,
+                    functionName: "getOneProposal",
+                    args: [Number(_id)],
+                });
+                return data;
+            } catch (err) {
+                setError(err.message);
+            }
+        },
+        [setError]
+    );
     const addProposal = async (_desc) => {
         if (!_desc) return;
         try {
@@ -248,58 +227,8 @@ export function useVotingContract() {
         }
     };
 
-    function setUpListeners() {
-        // event WorkflowStatusChange
-        watchContractEvent(
-            {
-                address: contractAddress,
-                abi: contracts.voting.abi,
-                eventName: "WorkflowStatusChange",
-            },
-            (log) => {
-                loadContract();
-            }
-        );
-
-        // event VoterRegistered
-        watchContractEvent(
-            {
-                address: contractAddress,
-                abi: contracts.voting.abi,
-                eventName: "VoterRegistered",
-            },
-            (log) => {
-                fetchData();
-            }
-        );
-
-        // event ProposalRegistered
-        watchContractEvent(
-            {
-                address: contractAddress,
-                abi: contracts.voting.abi,
-                eventName: "ProposalRegistered",
-            },
-            (log) => {
-                fetchData();
-            }
-        );
-
-        // event Voted
-        watchContractEvent(
-            {
-                address: contractAddress,
-                abi: contracts.voting.abi,
-                eventName: "Voted",
-            },
-            (log) => {
-                fetchData();
-            }
-        );
-    }
-
     // Fetch data
-    const fetchData = async () => {
+    const fetchData = useCallback(async () => {
         // voters
         try {
             const VoterRegisteredLogs = await client.getLogs({
@@ -379,8 +308,84 @@ export function useVotingContract() {
             toBlock: 1000n,
         });
         setWorkflowStatusChangeLogs(WorkflowStatusChangeLogs);
-    };
+    }, [address, getOneProposal, getVoter, setError]);
 
+    const setUpListeners = useCallback(() => {
+        // event WorkflowStatusChange
+        watchContractEvent(
+            {
+                address: contractAddress,
+                abi: contracts.voting.abi,
+                eventName: "WorkflowStatusChange",
+            },
+            (log) => {
+                loadContract();
+            }
+        );
+
+        // event VoterRegistered
+        watchContractEvent(
+            {
+                address: contractAddress,
+                abi: contracts.voting.abi,
+                eventName: "VoterRegistered",
+            },
+            (log) => {
+                fetchData();
+            }
+        );
+
+        // event ProposalRegistered
+        watchContractEvent(
+            {
+                address: contractAddress,
+                abi: contracts.voting.abi,
+                eventName: "ProposalRegistered",
+            },
+            (log) => {
+                fetchData();
+            }
+        );
+
+        // event Voted
+        watchContractEvent(
+            {
+                address: contractAddress,
+                abi: contracts.voting.abi,
+                eventName: "Voted",
+            },
+            (log) => {
+                fetchData();
+            }
+        );
+    }, [fetchData, loadContract]);
+
+    useEffect(() => {
+        console.log("useVotingContract effect !!");
+        if (!isConnected) return;
+        try {
+            loadContract();
+            fetchData();
+            setUpListeners();
+        } catch (error) {
+            toast({
+                title: "Error Contract !",
+                description: "Impossible de trouver le contract.",
+                status: "error",
+                duration: 9000,
+                position: "top-right",
+                isClosable: true,
+            });
+        }
+    }, [
+        isConnected,
+        address,
+        chain?.id,
+        fetchData,
+        loadContract,
+        setUpListeners,
+        toast,
+    ]);
     // export from hook
     return {
         // Static
