@@ -1,0 +1,19 @@
+{
+    "name": "next-hardhat-boilerplate",
+    "version": "0.1.0",
+    "private": true,
+    "workspaces": [
+        "./*"
+    ],
+    "scripts": {
+        "blockchain": "npm run blk --workspace=hardhat-project",
+        "sc:help": "npm run help --workspace=hardhat-project",
+        "sc:test": "npm run test --workspace=hardhat-project",
+        "sc:deploy": "npm run deploy --workspace=hardhat-project",
+        "sc:deploy:local": "npm run deploy:local --workspace=hardhat-project",
+        "dapp:dev": "npm run dev --workspace=dapp",
+        "dapp:build": "npm run build --workspace=dapp",
+        "dapp:start": "npm run start --workspace=dapp",
+        "dapp:lint": "npm run lint --workspace=dapp"
+    }
+}
