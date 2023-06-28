@@ -7,7 +7,6 @@ export const useNotif = () => {
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        console.log("notif !!")
         if (info)
             toast({
                 title: "Confirmation !",

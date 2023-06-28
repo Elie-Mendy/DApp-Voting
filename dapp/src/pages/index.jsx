@@ -19,7 +19,7 @@ import WorkflowStatusInfo from "@/components/WorkflowStatusInfo";
 
 const Index = () => {
     const themeColor = useColorModeValue("blue.700", "orange.300");
-    const { isVoter, isOwner } = useContext(VotingContractContext);
+    const { isVoter, isOwner, owner } = useContext(VotingContractContext);
 
     return (
         <>
@@ -57,6 +57,9 @@ const Index = () => {
                         <Text>
                             Consequently you can not access to the private;
                             information
+                        </Text>
+                        <Text>
+                            (owner : {owner})
                         </Text>
                     </Stack>
                 )}

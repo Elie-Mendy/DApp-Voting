@@ -12,15 +12,32 @@ import {
 import { useAccount, useNetwork } from "wagmi";
 import { isAddress } from "viem";
 import { createPublicClient, http, parseAbiItem } from "viem";
-import { hardhat } from "viem/chains";
+import { mainnet, sepolia, hardhat } from "viem/chains";
 
 import { useNotif } from "@/hooks/useNotif";
 
 import contracts from "@/config/contracts.json";
 const contractAddress = process.env.NEXT_PUBLIC_CONTRACT_ADDRESS;
+const clientChain = process.env.NEXT_PUBLIC_CLIENT_CHAIN;
+
+const selectedChain = () => {
+    switch (clientChain) {
+        case "mainnet":
+            return mainnet;
+            break;
+        case "sepolia":
+            return sepolia;
+            break;
+        case "hardhat":
+            return hardhat;
+            break;
+        default:
+            console.log("error chain not found");
+    }
+};
 
 const client = createPublicClient({
-    chain: hardhat,
+    chain: selectedChain(),
     transport: http(),
 });
 
@@ -361,7 +378,6 @@ export function useVotingContract() {
     }, [fetchData, loadContract]);
 
     useEffect(() => {
-        console.log("useVotingContract effect !!");
         if (!isConnected) return;
         try {
             loadContract();
