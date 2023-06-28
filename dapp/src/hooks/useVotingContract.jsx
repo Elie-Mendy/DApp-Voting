@@ -14,9 +14,10 @@ import { isAddress } from "viem";
 import { createPublicClient, http, parseAbiItem } from "viem";
 import { hardhat } from "viem/chains";
 
-import { useError } from "@/hooks/useError";
+import { useNotif } from "@/hooks/useNotif";
 
 import contracts from "@/config/contracts.json";
+const contractAddress = process.env.NEXT_PUBLIC_CONTRACT_ADDRESS;
 
 const client = createPublicClient({
     chain: hardhat,
@@ -26,7 +27,7 @@ const client = createPublicClient({
 export function useVotingContract() {
     const { isConnected, address, activeConnector } = useAccount();
     const { chain } = useNetwork();
-    const { setError } = useError();
+    const { setInfo, setError } = useNotif();
     const toast = useToast();
 
     // init state
@@ -53,7 +54,7 @@ export function useVotingContract() {
         // get contract with provider connected
         const walletClient = await getWalletClient();
         const voting = getContract({
-            address: contracts.voting.address,
+            address: contractAddress,
             abi: contracts.voting.abi,
             walletClient,
         });
@@ -96,12 +97,13 @@ export function useVotingContract() {
         if (!_address) return;
         try {
             const { request } = await prepareWriteContract({
-                address: contracts.voting.address,
+                address: contractAddress,
                 abi: contracts.voting.abi,
                 functionName: "addVoter",
                 args: [String(_address)],
             });
             const { hash } = await writeContract(request);
+            setInfo("Voter added !");
             return hash;
         } catch (err) {
             setError(err.message);
@@ -110,11 +112,12 @@ export function useVotingContract() {
     const startProposalsRegistering = async () => {
         try {
             const { request } = await prepareWriteContract({
-                address: contracts.voting.address,
+                address: contractAddress,
                 abi: contracts.voting.abi,
                 functionName: "startProposalsRegistering",
             });
             const { hash } = await writeContract(request);
+            setInfo("Proposals registering started !");
             return hash;
         } catch (err) {
             setError(err.message);
@@ -123,11 +126,12 @@ export function useVotingContract() {
     const endProposalsRegistering = async () => {
         try {
             const { request } = await prepareWriteContract({
-                address: contracts.voting.address,
+                address: contractAddress,
                 abi: contracts.voting.abi,
                 functionName: "endProposalsRegistering",
             });
             const { hash } = await writeContract(request);
+            setInfo("Proposals registering ended !");
             return hash;
         } catch (err) {
             setError(err.message);
@@ -136,11 +140,12 @@ export function useVotingContract() {
     const startVotingSession = async () => {
         try {
             const { request } = await prepareWriteContract({
-                address: contracts.voting.address,
+                address: contractAddress,
                 abi: contracts.voting.abi,
                 functionName: "startVotingSession",
             });
             const { hash } = await writeContract(request);
+            setInfo("Voting session started !");
             return hash;
         } catch (err) {
             setError(err.message);
@@ -149,11 +154,12 @@ export function useVotingContract() {
     const endVotingSession = async () => {
         try {
             const { request } = await prepareWriteContract({
-                address: contracts.voting.address,
+                address: contractAddress,
                 abi: contracts.voting.abi,
                 functionName: "endVotingSession",
             });
             const { hash } = await writeContract(request);
+            setInfo("Voting session ended !");
             return hash;
         } catch (err) {
             setError(err.message);
@@ -162,11 +168,12 @@ export function useVotingContract() {
     const tallyVotes = async () => {
         try {
             const { request } = await prepareWriteContract({
-                address: contracts.voting.address,
+                address: contractAddress,
                 abi: contracts.voting.abi,
                 functionName: "tallyVotes",
             });
             const { hash } = await writeContract(request);
+            setInfo("Votes tallied !");
             return hash;
         } catch (err) {
             setError(err.message);
@@ -176,7 +183,7 @@ export function useVotingContract() {
         if (!_address) return;
         try {
             const data = await readContract({
-                address: contracts.voting.address,
+                address: contractAddress,
                 abi: contracts.voting.abi,
                 functionName: "getVoter",
                 args: [String(_address)],
@@ -190,7 +197,7 @@ export function useVotingContract() {
         if (Number(_id) < 0) return;
         try {
             const data = await readContract({
-                address: contracts.voting.address,
+                address: contractAddress,
                 abi: contracts.voting.abi,
                 functionName: "getOneProposal",
                 args: [Number(_id)],
@@ -204,12 +211,13 @@ export function useVotingContract() {
         if (!_desc) return;
         try {
             const { request } = await prepareWriteContract({
-                address: contracts.voting.address,
+                address: contractAddress,
                 abi: contracts.voting.abi,
                 functionName: "addProposal",
                 args: [String(_desc)],
             });
             const { hash } = await writeContract(request);
+            setInfo("Proposal added !");
             return hash;
         } catch (err) {
             setError(err.message);
@@ -219,12 +227,13 @@ export function useVotingContract() {
         if (!_id) return;
         try {
             const { request } = await prepareWriteContract({
-                address: contracts.voting.address,
+                address: contractAddress,
                 abi: contracts.voting.abi,
                 functionName: "setVote",
                 args: [Number(_id)],
             });
             const { hash } = await writeContract(request);
+            setInfo("Has Voted !");
             return hash;
         } catch (err) {
             setError(err.message);
@@ -235,7 +244,7 @@ export function useVotingContract() {
         // event WorkflowStatusChange
         watchContractEvent(
             {
-                address: contracts.voting.address,
+                address: contractAddress,
                 abi: contracts.voting.abi,
                 eventName: "WorkflowStatusChange",
             },
@@ -247,7 +256,7 @@ export function useVotingContract() {
         // event VoterRegistered
         watchContractEvent(
             {
-                address: contracts.voting.address,
+                address: contractAddress,
                 abi: contracts.voting.abi,
                 eventName: "VoterRegistered",
             },
@@ -259,7 +268,7 @@ export function useVotingContract() {
         // event ProposalRegistered
         watchContractEvent(
             {
-                address: contracts.voting.address,
+                address: contractAddress,
                 abi: contracts.voting.abi,
                 eventName: "ProposalRegistered",
             },
@@ -271,7 +280,7 @@ export function useVotingContract() {
         // event Voted
         watchContractEvent(
             {
-                address: contracts.voting.address,
+                address: contractAddress,
                 abi: contracts.voting.abi,
                 eventName: "Voted",
             },
@@ -284,37 +293,46 @@ export function useVotingContract() {
     // Fetch data
     const fetchData = async () => {
         // voters
-        const VoterRegisteredLogs = await client.getLogs({
-            event: parseAbiItem("event VoterRegistered(address voterAddress)"),
-            fromBlock: 0n,
-            toBlock: 1000n,
-        });
-        const processedVoters = await Promise.all(
-            VoterRegisteredLogs.map(async (log) => {
-                const result = await getVoter(log.args.voterAddress);
-                return { address: log.args.voterAddress, ...result };
-            })
-        );
-        setVotersTableData(
-            processedVoters.map((voter) => ({
-                address: voter.address,
-                hasVoted: voter.hasVoted,
-                votedProposalId: voter.votedProposalId.toString(),
-            }))
-        );
-        setVotersLogs(VoterRegisteredLogs.map((log) => log.args.voterAddress));
+        try {
+            const VoterRegisteredLogs = await client.getLogs({
+                event: parseAbiItem("event VoterRegistered(address voterAddress)"),
+                fromBlock: 0n,
+                toBlock: 1000n,
+            });
+            const processedVoters = await Promise.all(
+                VoterRegisteredLogs.map(async (log) => {
+                    const result = await getVoter(log.args.voterAddress);
+                    return { address: log.args.voterAddress, ...result };
+                })
+            );
+            setVotersTableData(
+                processedVoters.map((voter) => ({
+                    address: voter.address,
+                    hasVoted: voter.hasVoted,
+                    votedProposalId: voter.votedProposalId.toString(),
+                }))
+            );
+            setVotersLogs(VoterRegisteredLogs.map((log) => log.args.voterAddress));
 
-        // current user
-        const parsedVoters = processedVoters.filter(
-            (voter) => voter.address == address
-        );
-        if (parsedVoters.length > 0) {
-            setIsVoter(parsedVoters[0].isRegistered);
-            setHasVoted(parsedVoters[0].hasVoted);
-        } else {
-            setIsVoter(false);
-            setHasVoted(false);
+            // current user
+            const parsedVoters = processedVoters.filter(
+                (voter) => voter.address == address
+            );
+            if (parsedVoters.length > 0) {
+                setIsVoter(parsedVoters[0].isRegistered);
+                setHasVoted(parsedVoters[0].hasVoted);
+            } else {
+                setIsVoter(false);
+                setHasVoted(false);
+            }
+        } catch (err) {
+            console.log(err);
+            setError(err.message);
         }
+
+        
+
+        
 
         // proposals
         const ProposalsLogs = await client.getLogs({
@@ -358,7 +376,7 @@ export function useVotingContract() {
     // export from hook
     return {
         // Static
-        address: contracts.voting.address,
+        address: contractAddress,
         // State contract
         contract,
         owner,
