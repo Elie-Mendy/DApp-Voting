@@ -26,8 +26,8 @@ const { chains, publicClient } = configureChains(
 );
 
 const { connectors } = getDefaultWallets({
-    appName: "Voting Dapp",
-    projectId: process.env.NEXT_PUBLIC_INFURA_PROJECT_ID,
+    appName: "Voting-DApp",
+    projectId: process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID,
     chains,
 });
 
