@@ -10,36 +10,10 @@ import {
     watchContractEvent,
 } from "@wagmi/core";
 import { useAccount, useNetwork } from "wagmi";
-import { isAddress } from "viem";
-import { createPublicClient, http, parseAbiItem } from "viem";
-import { mainnet, sepolia, hardhat } from "viem/chains";
-
+import { isAddress, parseAbiItem } from "viem";
 import { useNotif } from "@/hooks/useNotif";
 
-import contracts from "@/config/contracts.json";
-const contractAddress = process.env.NEXT_PUBLIC_CONTRACT_ADDRESS;
-const clientChain = process.env.NEXT_PUBLIC_CLIENT_CHAIN;
-
-const selectedChain = () => {
-    switch (clientChain) {
-        case "mainnet":
-            return mainnet;
-            break;
-        case "sepolia":
-            return sepolia;
-            break;
-        case "hardhat":
-            return hardhat;
-            break;
-        default:
-            console.log("error chain not found");
-    }
-};
-
-const client = createPublicClient({
-    chain: selectedChain(),
-    transport: http(),
-});
+import { config, client } from "@/config";
 
 export function useVotingContract() {
     const { isConnected, address, activeConnector } = useAccount();
@@ -58,9 +32,7 @@ export function useVotingContract() {
     const [proposalsLogs, setProposalsLogs] = useState([]);
     const [votersLogs, setVotersLogs] = useState([]);
     const [votesLogs, setVotesLogs] = useState([]);
-    const [workflowStatusChangeLogs, setWorkflowStatusChangeLogs] = useState(
-        []
-    );
+    const [workflowStatusChangeLogs, setWorkflowStatusChangeLogs] = useState([]);
 
     // TableData
     const [votersTableData, setVotersTableData] = useState([]);
@@ -71,10 +43,12 @@ export function useVotingContract() {
         // get contract with provider connected
         const walletClient = await getWalletClient();
         const voting = getContract({
-            address: contractAddress,
-            abi: contracts.voting.abi,
+            address: config.contracts.voting.address,
+            abi: config.contracts.voting.abi,
             walletClient,
         });
+
+        console.log('voting', await voting.read.owner())
 
         const owner = isAddress(await voting.read.owner())
             ? await voting.read.owner()
@@ -95,8 +69,8 @@ export function useVotingContract() {
         if (!_address) return;
         try {
             const { request } = await prepareWriteContract({
-                address: contractAddress,
-                abi: contracts.voting.abi,
+                address: config.contracts.voting.address,
+                abi: config.contracts.voting.abi,
                 functionName: "addVoter",
                 args: [String(_address)],
             });
@@ -110,8 +84,8 @@ export function useVotingContract() {
     const startProposalsRegistering = async () => {
         try {
             const { request } = await prepareWriteContract({
-                address: contractAddress,
-                abi: contracts.voting.abi,
+                address: config.contracts.voting.address,
+                abi: config.contracts.voting.abi,
                 functionName: "startProposalsRegistering",
             });
             const { hash } = await writeContract(request);
@@ -124,8 +98,8 @@ export function useVotingContract() {
     const endProposalsRegistering = async () => {
         try {
             const { request } = await prepareWriteContract({
-                address: contractAddress,
-                abi: contracts.voting.abi,
+                address: config.contracts.voting.address,
+                abi: config.contracts.voting.abi,
                 functionName: "endProposalsRegistering",
             });
             const { hash } = await writeContract(request);
@@ -138,8 +112,8 @@ export function useVotingContract() {
     const startVotingSession = async () => {
         try {
             const { request } = await prepareWriteContract({
-                address: contractAddress,
-                abi: contracts.voting.abi,
+                address: config.contracts.voting.address,
+                abi: config.contracts.voting.abi,
                 functionName: "startVotingSession",
             });
             const { hash } = await writeContract(request);
@@ -152,8 +126,8 @@ export function useVotingContract() {
     const endVotingSession = async () => {
         try {
             const { request } = await prepareWriteContract({
-                address: contractAddress,
-                abi: contracts.voting.abi,
+                address: config.contracts.voting.address,
+                abi: config.contracts.voting.abi,
                 functionName: "endVotingSession",
             });
             const { hash } = await writeContract(request);
@@ -166,8 +140,8 @@ export function useVotingContract() {
     const tallyVotes = async () => {
         try {
             const { request } = await prepareWriteContract({
-                address: contractAddress,
-                abi: contracts.voting.abi,
+                address: config.contracts.voting.address,
+                abi: config.contracts.voting.abi,
                 functionName: "tallyVotes",
             });
             const { hash } = await writeContract(request);
@@ -182,8 +156,8 @@ export function useVotingContract() {
             if (!_address) return;
             try {
                 const data = await readContract({
-                    address: contractAddress,
-                    abi: contracts.voting.abi,
+                    address: config.contracts.voting.address,
+                    abi: config.contracts.voting.abi,
                     functionName: "getVoter",
                     args: [String(_address)],
                 });
@@ -199,8 +173,8 @@ export function useVotingContract() {
             if (Number(_id) < 0) return;
             try {
                 const data = await readContract({
-                    address: contractAddress,
-                    abi: contracts.voting.abi,
+                    address: config.contracts.voting.address,
+                    abi: config.contracts.voting.abi,
                     functionName: "getOneProposal",
                     args: [Number(_id)],
                 });
@@ -215,8 +189,8 @@ export function useVotingContract() {
         if (!_desc) return;
         try {
             const { request } = await prepareWriteContract({
-                address: contractAddress,
-                abi: contracts.voting.abi,
+                address: config.contracts.voting.address,
+                abi: config.contracts.voting.abi,
                 functionName: "addProposal",
                 args: [String(_desc)],
             });
@@ -231,8 +205,8 @@ export function useVotingContract() {
         if (!_id) return;
         try {
             const { request } = await prepareWriteContract({
-                address: contractAddress,
-                abi: contracts.voting.abi,
+                address: config.contracts.voting.address,
+                abi: config.contracts.voting.abi,
                 functionName: "setVote",
                 args: [Number(_id)],
             });
@@ -331,8 +305,8 @@ export function useVotingContract() {
         // event WorkflowStatusChange
         watchContractEvent(
             {
-                address: contractAddress,
-                abi: contracts.voting.abi,
+                address: config.contracts.voting.address,
+                abi: config.contracts.voting.abi,
                 eventName: "WorkflowStatusChange",
             },
             (log) => {
@@ -343,8 +317,8 @@ export function useVotingContract() {
         // event VoterRegistered
         watchContractEvent(
             {
-                address: contractAddress,
-                abi: contracts.voting.abi,
+                address: config.contracts.voting.address,
+                abi: config.contracts.voting.abi,
                 eventName: "VoterRegistered",
             },
             (log) => {
@@ -355,8 +329,8 @@ export function useVotingContract() {
         // event ProposalRegistered
         watchContractEvent(
             {
-                address: contractAddress,
-                abi: contracts.voting.abi,
+                address: config.contracts.voting.address,
+                abi: config.contracts.voting.abi,
                 eventName: "ProposalRegistered",
             },
             (log) => {
@@ -367,8 +341,8 @@ export function useVotingContract() {
         // event Voted
         watchContractEvent(
             {
-                address: contractAddress,
-                abi: contracts.voting.abi,
+                address: config.contracts.voting.address,
+                abi: config.contracts.voting.abi,
                 eventName: "Voted",
             },
             (log) => {
@@ -405,7 +379,7 @@ export function useVotingContract() {
     // export from hook
     return {
         // Static
-        address: contractAddress,
+        address: config.contracts.voting.address,
         // State contract
         contract,
         owner,
