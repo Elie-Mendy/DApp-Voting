@@ -8,7 +8,7 @@ export const config = {
     chain: process.env.NEXT_PUBLIC_CLIENT_CHAIN,
     contracts: {
         voting: {
-            address: process.env.NEXT_PUBLIC_CHAIN,
+            address: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS,
             abi: ABI.voting
         }
     }
