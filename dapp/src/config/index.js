@@ -2,8 +2,6 @@ import { createPublicClient, http } from "viem";
 import { mainnet, sepolia, hardhat } from "viem/chains";
 import ABI from "@/config/ABIs.json";
 
-console.log('CONFIG', process.env, ABI, "fss")
-
 export const config = {
     chain: process.env.NEXT_PUBLIC_CLIENT_CHAIN,
     contracts: {

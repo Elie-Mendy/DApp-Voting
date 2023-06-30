@@ -16,7 +16,6 @@ import { getDefaultWallets, RainbowKitProvider, lightTheme,} from "@rainbow-me/r
 // Wagmi provider
 import { configureChains, createConfig, WagmiConfig } from "wagmi";
 import { mainnet, sepolia, hardhat } from "wagmi/chains";
-import { alchemyProvider } from "wagmi/providers/alchemy";
 import { publicProvider } from "wagmi/providers/public";
 
 // wagmi config
