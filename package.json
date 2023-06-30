@@ -1,19 +1,34 @@
 {
-    "name": "next-hardhat-boilerplate",
-    "version": "0.1.0",
-    "private": true,
-    "workspaces": [
-        "./*"
-    ],
-    "scripts": {
-        "blockchain": "npm run blk --workspace=hardhat-project",
-        "sc:help": "npm run help --workspace=hardhat-project",
-        "sc:test": "npm run test --workspace=hardhat-project",
-        "sc:deploy": "npm run deploy --workspace=hardhat-project",
-        "sc:deploy:local": "npm run deploy:local --workspace=hardhat-project",
-        "dapp:dev": "npm run dev --workspace=dapp",
-        "dapp:build": "npm run build --workspace=dapp",
-        "dapp:start": "npm run start --workspace=dapp",
-        "dapp:lint": "npm run lint --workspace=dapp"
-    }
+  "name": "next-hardhat-boilerplate",
+  "version": "0.1.0",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "description": "Cours alyra, projet 3 dapp voting",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Elie-Mendy/Alyra-Projet3.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Elie-Mendy/Alyra-Projet3/issues"
+  },
+  "homepage": "https://github.com/Elie-Mendy/Alyra-Projet3#readme",
+  "scripts": {
+    "blockchain": "npm run blk --workspace=hardhat-project",
+    "sc:help": "npm run help --workspace=hardhat-project",
+    "sc:test": "npm run test --workspace=hardhat-project",
+    "sc:deploy": "npm run deploy --workspace=hardhat-project",
+    "sc:deploy:local": "npm run deploy:local --workspace=hardhat-project",
+    "dapp:dev": "npm run dev --workspace=dapp",
+    "dapp:build": "npm run build --workspace=dapp",
+    "dapp:start": "npm run start --workspace=dapp",
+    "dapp:lint": "npm run lint --workspace=dapp"
+  },
+  "engines": {
+    "node": ">=16.16.0"
+  }
 }
