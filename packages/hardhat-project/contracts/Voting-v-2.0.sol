@@ -159,7 +159,7 @@ contract VotingV2 is Ownable {
         voters[msg.sender].hasVoted = true;
         proposalsArray[_id].voteCount++;
 
-        if (proposalsArray[_id].voteCount > proposalsArray[winningProposalID].voteCount) {
+        if (proposalsArray[_id].voteCount > proposalsArray[TmpWinningProposalID].voteCount) {
             TmpWinningProposalID = _id;
         }
 
