@@ -164,6 +164,7 @@ export function useVotingContract() {
                     address: config.contracts.voting.address,
                     abi: config.contracts.voting.abi,
                     functionName: "getVoter",
+                    account: address,
                     args: [String(_address)],
                 });
                 return data;
@@ -181,6 +182,7 @@ export function useVotingContract() {
                     address: config.contracts.voting.address,
                     abi: config.contracts.voting.abi,
                     functionName: "getOneProposal",
+                    account: address,
                     args: [Number(_id)],
                 });
                 return data;
@@ -201,6 +203,7 @@ export function useVotingContract() {
             });
             const { hash } = await writeContract(request);
             setInfo("Proposal added !");
+            confetti()
             return hash;
         } catch (err) {
             setError(err.message);
@@ -229,12 +232,14 @@ export function useVotingContract() {
         // voters
         try {
             const VoterRegisteredLogs = await client.getLogs({
+                address: config.contracts.voting.address,
                 event: parseAbiItem(
                     "event VoterRegistered(address voterAddress)"
                 ),
-                fromBlock: 0n,
-                toBlock: 1000n,
+                fromBlock: BigInt(Number(await client.getBlockNumber()) - 25001),
+                toBlock: "latest",
             });
+            console.log('VoterRegisteredLogs', VoterRegisteredLogs)
             const processedVoters = await Promise.all(
                 VoterRegisteredLogs.map(async (log) => {
                     const result = await getVoter(log.args.voterAddress);
@@ -256,6 +261,7 @@ export function useVotingContract() {
             const parsedVoters = processedVoters.filter(
                 (voter) => voter.address == address
             );
+            console.log('parsedVoters', parsedVoters)
             if (parsedVoters.length > 0) {
                 setIsVoter(parsedVoters[0].isRegistered);
                 setHasVoted(parsedVoters[0].hasVoted);
@@ -269,9 +275,10 @@ export function useVotingContract() {
 
         // proposals
         const ProposalsLogs = await client.getLogs({
+            address: config.contracts.voting.address,
             event: parseAbiItem("event ProposalRegistered(uint proposalId)"),
-            fromBlock: 0n,
-            toBlock: 1000n,
+            fromBlock: BigInt(Number(await client.getBlockNumber()) - 15000),
+            toBlock: "latest",
         });
         const processedProposals = await Promise.all(
             ProposalsLogs.map(async (log) => {
@@ -289,19 +296,21 @@ export function useVotingContract() {
 
         // votes
         const VotesLogs = await client.getLogs({
+            address: config.contracts.voting.address,
             event: parseAbiItem("event Voted(address voter, uint proposalId)"),
-            fromBlock: 0n,
-            toBlock: 1000n,
+            fromBlock: BigInt(Number(await client.getBlockNumber()) - 15000),
+            toBlock: "latest",
         });
         setVotesLogs(VotesLogs);
 
         // votes
         const WorkflowStatusChangeLogs = await client.getLogs({
+            address: config.contracts.voting.address,
             event: parseAbiItem(
                 "event WorkflowStatusChange(uint8 previousStatus, uint8 newStatus)"
             ),
-            fromBlock: 0n,
-            toBlock: 1000n,
+            fromBlock: BigInt(Number(await client.getBlockNumber()) - 15000),
+            toBlock: "latest",
         });
         setWorkflowStatusChangeLogs(WorkflowStatusChangeLogs);
     }, [address, getOneProposal, getVoter, setError]);
