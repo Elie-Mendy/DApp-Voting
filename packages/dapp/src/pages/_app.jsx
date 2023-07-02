@@ -31,7 +31,12 @@ import {
     trustWallet
 } from '@rainbow-me/rainbowkit/wallets';
 
-const { NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID, NEXT_PUBLIC_INFURA_PROJECT_ID, NEXT_PUBLIC_WALLET_CONNECT_APPNAME } = process.env
+const {
+    NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID,
+    NEXT_PUBLIC_INFURA_PROJECT_ID,
+    NEXT_PUBLIC_WALLET_CONNECT_APPNAME
+} = process.env
+
 const projectId = NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID,
     appName = NEXT_PUBLIC_WALLET_CONNECT_APPNAME
 
@@ -44,9 +49,9 @@ const { chains, publicClient } = configureChains(
     ]
 );
 
-const { connectors, wallets } = getDefaultWallets({
+const { connectors } = getDefaultWallets({
     appName,
-    projectId: process.env.NEXT_PUBLIC_INFURA_PROJECT_ID,
+    projectId: process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID,
     chains,
 });
 
@@ -74,7 +79,6 @@ const { connectors, wallets } = getDefaultWallets({
 const wagmiConfig = createConfig({
     autoConnect: true,
     connectors,
-    projectId,
     publicClient
 });
 

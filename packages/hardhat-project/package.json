@@ -23,6 +23,8 @@
     "coverage": "npx hardhat coverage",
     "blk": "npx hardhat node",
     "deploy:local": "npx hardhat run scripts/deploy.js --network localhost",
+    "deploy:sepolia": "npx hardhat run scripts/deploy.js --network sepolia",
+    "deploy:goerli": "npx hardhat run scripts/deploy.js --network goerli",
     "clean": "npx hardhat clean"
   },
   "devDependencies": {
