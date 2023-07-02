@@ -1,6 +1,10 @@
 # Config
 
-Limit of contract is, if equality on proposal, then le first proposalID with the total_votes win.
+Limit of contract is, if equality on proposal, then the first proposalID with the total_votes win (default error).
+
+____
+
+DOS_GAS_LIMIT is an simple error of memory. In example tally_votes dont are use if 10_000 proposals, the memory freeze because the function cost is limit for exec function.
 
 In hardhat.config.js set params `blockGasLimit` for set the gasLimit accepted:
 
@@ -34,11 +38,30 @@ Result function tallyVote() -> crashed.
 
 #### Correction with
 
-in function `setVote()`
+in function `setVote()` and t
 ```js
-    if (proposalsArray[_id].voteCount > proposalsArray[winningProposalID].voteCount) {
-        winningProposalID = _id;
+
+    uint private TmpWinningProposalID;
+
+function setVote(uint _id) external onlyVoters {
+    ...
+
+    if (proposalsArray[_id].voteCount > proposalsArray[TmpWinningProposalID].voteCount) {
+        TmpWinningProposalID = _id;
     }
+
+    ...
+}
+
+...
+function tallyVotes() external onlyOwner {
+    ...
+    
+    winningProposalID = TmpWinningProposalID;
+
+    ...
+}
+
 ```
 
 Set `winningProposalID` after vote for no load loop in function, because the loop DOS gas limit of contract.
