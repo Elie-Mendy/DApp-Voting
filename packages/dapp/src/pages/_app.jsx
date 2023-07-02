@@ -20,37 +20,28 @@ import { mainnet, sepolia, hardhat, polygon, polygonMumbai } from "wagmi/chains"
 import { publicProvider } from "wagmi/providers/public";
 import { infuraProvider } from '@wagmi/core/providers/infura'
 
-import {
-    injectedWallet,
-    rainbowWallet,
-    metaMaskWallet,
-    coinbaseWallet,
-    walletConnectWallet,
-    ledgerWallet,
-    argentWallet,
-    trustWallet
-} from '@rainbow-me/rainbowkit/wallets';
-
-const {
-    NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID,
-    NEXT_PUBLIC_INFURA_PROJECT_ID,
-    NEXT_PUBLIC_WALLET_CONNECT_APPNAME
-} = process.env
-
-const projectId = NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID,
-    appName = NEXT_PUBLIC_WALLET_CONNECT_APPNAME
+// import {
+//     injectedWallet,
+//     rainbowWallet,
+//     metaMaskWallet,
+//     coinbaseWallet,
+//     walletConnectWallet,
+//     ledgerWallet,
+//     argentWallet,
+//     trustWallet
+// } from '@rainbow-me/rainbowkit/wallets';
 
 // wagmi config
 const { chains, publicClient } = configureChains(
     [mainnet, sepolia, polygon, polygonMumbai, hardhat],
     [
         publicProvider(),
-        infuraProvider({ apiKey: NEXT_PUBLIC_INFURA_PROJECT_ID })
+        infuraProvider({ apiKey: process.env.NEXT_PUBLIC_INFURA_PROJECT_ID })
     ]
 );
 
 const { connectors } = getDefaultWallets({
-    appName,
+    appName: process.env.NEXT_PUBLIC_WALLET_CONNECT_APPNAME,
     projectId: process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID,
     chains,
 });
