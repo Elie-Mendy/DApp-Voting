@@ -13,7 +13,7 @@ export default function ProposalId() {
 
     useEffect(() => {
         if (!isVoter) router.push('/')
-    }, [isVoter])
+    }, [isVoter, router])
 
     const loadProposal = async () => {
         const p = await getOneProposal(Number(proposalId))
@@ -23,7 +23,7 @@ export default function ProposalId() {
     useEffect(() => {
         if (!proposalId) return
         loadProposal()
-    }, [proposalId, setVote])
+    }, [proposalId, setVote, loadProposal])
     
     return (
         <>
