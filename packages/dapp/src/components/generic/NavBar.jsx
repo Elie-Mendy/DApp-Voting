@@ -20,7 +20,7 @@ import { useContext } from "react";
 
 export function Navbar() {
     const { isConnected } = useAccount();
-    const { isOwner } = useContext(VotingContractContext);
+    const { isOwner, isVoter } = useContext(VotingContractContext);
     return (
         <Flex
             direction={"column"}
@@ -35,7 +35,7 @@ export function Navbar() {
             borderBottom={1}
             boxShadow={useColorModeValue(
                 "0 5px 25px rgba(9,17,53,.18823529411764706)",
-                "0 5px 20px #f003ba "
+                `0 5px 20px ${isOwner ? "#61BDC2" : isVoter ? "#33FF40" : "#ffffff"}`
             )}
             borderStyle={"solid"}
             borderColor={useColorModeValue("gray.100", "primary.100")}
@@ -59,12 +59,14 @@ export function Navbar() {
                         as="h1"
                         fontSize={"2xl"}
                     >
-                        <Box
-                            color={useColorModeValue("blue.600", "orange.300")}
-                        >
-                            VOTING
-                        </Box>{" "}
-                        <Box>Alyra</Box>
+                        <HStack>
+                            <Box
+                                color={useColorModeValue("blue.600", "orange.300")}
+                            >
+                                VOTING
+                            </Box>{" "}
+                            <Box>Alyra</Box>
+                        </HStack>
                     </Heading>
                 </Link>
 
@@ -72,34 +74,48 @@ export function Navbar() {
                 <HStack
                     mr={{ base: "1vh", lg: "5vh", xl: "5vh", "2xl": "5vh" }}
                 >
-                    <ConnectButton
-                        label="Connexion"
-                        accountStatus={{
-                            smallScreen: "avatar",
-                            largeScreen: "full",
-                        }}
-                        chainStatus={{
-                            smallScreen: "none",
-                            largeScreen: "full",
-                        }}
-                    />
-
-                    {/* Menu */}
-                    {isOwner && (
+                    {!isConnected ? (
+                        <ConnectButton
+                            label="Connexion"
+                            accountStatus={{
+                                smallScreen: "avatar",
+                                largeScreen: "full",
+                            }}
+                            chainStatus={{
+                                smallScreen: "none",
+                                largeScreen: "full",
+                            }}
+                        />
+                    ) : (
                         <Menu>
                             <MenuButton variant={"ghost"} as={Button}>
                                 Menu
                             </MenuButton>
-                            <MenuList>
-                                <Link href="/">
+                            <MenuList px={1}>
+                                <ConnectButton
+                                    label="Connexion"
+                                    accountStatus={{
+                                        smallScreen: "avatar",
+                                        largeScreen: "full",
+                                    }}
+                                    chainStatus={{
+                                        smallScreen: "none",
+                                        largeScreen: "full",
+                                    }}
+                                />
+                                <Link pt={1} href="/">
                                     <MenuItem>Home</MenuItem>
                                 </Link>
-                                <Link href="admin">
-                                    <MenuItem>Admin Dashboard</MenuItem>
-                                </Link>
+                                {isOwner && (
+                                    <Link href="/admin">
+                                        <MenuItem>Admin Dashboard</MenuItem>
+                                    </Link>
+                                )}
                             </MenuList>
                         </Menu>
                     )}
+
+                    {/* Menu */}
                     <ColorModeSwitcher />
                 </HStack>
             </Flex>

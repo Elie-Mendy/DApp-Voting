@@ -16,13 +16,14 @@ import {
 } from "@chakra-ui/react";
 import { useContext } from "react";
 import WorkflowStatusInfo from "@/components/WorkflowStatusInfo";
+import MainLayout from "@/layouts/MainLayout";
 
 const Index = () => {
     const themeColor = useColorModeValue("blue.700", "orange.300");
     const { isVoter, isOwner, owner } = useContext(VotingContractContext);
 
     return (
-        <>
+        <MainLayout>
             <Flex
                 ml={{ base: "1vh", lg: "5vh", xl: "10vh", "2xl": "15vh" }}
                 mr={{ base: "1vh", lg: "5vh", xl: "10vh", "2xl": "15vh" }}
@@ -64,7 +65,7 @@ const Index = () => {
                     </Stack>
                 )}
             </Flex>
-        </>
+        </MainLayout>
     );
 };
 
