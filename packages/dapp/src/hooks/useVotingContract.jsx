@@ -49,8 +49,6 @@ export function useVotingContract() {
             walletClient,
         });
 
-        console.log('voting', await voting.read.owner())
-
         const owner = isAddress(await voting.read.owner())
             ? await voting.read.owner()
             : null;
@@ -228,7 +226,6 @@ export function useVotingContract() {
 
     // Fetch data
     const fetchData = useCallback(async () => {
-        console.log("CLIENT ", client)
         // voters
         try {
             const VoterRegisteredLogs = await client.getLogs({
@@ -254,7 +251,6 @@ export function useVotingContract() {
             setVotersLogs(
                 VoterRegisteredLogs.map((log) => log.args.voterAddress)
             );
-            console.log("VOTERS ", processedVoters);
 
             // current user
             const parsedVoters = processedVoters.filter(
@@ -268,7 +264,6 @@ export function useVotingContract() {
                 setHasVoted(false);
             }
         } catch (err) {
-            console.log(err);
             setError(err.message);
         }
 
@@ -291,7 +286,6 @@ export function useVotingContract() {
                 voteCount: proposal.voteCount.toString(),
             }))
         );
-        console.log("PROPOSALS LOGS ", processedProposals);
 
         // votes
         const VotesLogs = await client.getLogs({
@@ -300,7 +294,6 @@ export function useVotingContract() {
             toBlock: 1000n,
         });
         setVotesLogs(VotesLogs);
-        console.log("VOTES LOGS ", VotesLogs);
 
         // votes
         const WorkflowStatusChangeLogs = await client.getLogs({
