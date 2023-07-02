@@ -1,7 +1,9 @@
 # Alyra-Projet3
-Repo made with hardhat, next, ethers, wagmi, rainbowkit, openzepplin, ...
 
-Cette DApp couvre plusieurs cas d'utilisation du contrat de `voting.sol`:
+Repo made with hardhat, next, viem, wagmi, rainbowkit, openzepplin, ...
+
+##### Cette DApp couvre les cas d'utilisation du contrat `voting.sol`:
+
   - L'affichage diffère selon le profile connecté (neon sous la navbar)
   - On peut ce connecté avec son wallet grâce à rainbowkit, wagmi, et viem
   - Le owner peut enregistrer des nouvelles address en voter
@@ -12,30 +14,29 @@ Cette DApp couvre plusieurs cas d'utilisation du contrat de `voting.sol`:
   - les voters peuvent voté selon le status du contrat
   - Une comptabilisation des votes est faites par le owner
 
-Pour l'exercices nous devions corriger la faille DOS_GAS_LIMIT de la fonction tally_vote:
+##### Pour l'exercices nous devions corriger la faille DOS_GAS_LIMIT de la fonction tally_vote:
   - plus d'info ici `./packages/hardhat-project/test/Voting_DOS_GAS_LIMIT.md`
   - le contrat corrigé est ici `./packages/hardhat-project/contracts/Voting-v-2.0.sol`
   
-Le script de déploiement à été changer:
+
+##### Le script de déploiement à été changer:
 
 ```js
 const Voting = await hre.ethers.getContractFactory("VotingV2");
 ```
 
-Les tests uintaires ont toujours le meme fonctionement.
+##### Les tests uintaires sont toujours les memes fonctionement.
+  - plus d'info `./packages/hardhat-project/test/Voting.js`
 
 ___
 
-### Voici le lien vers la vidéo de présentation de la dapp
+#### Lien vers la vidéo de présentation de la dapp
 
-[Lien] ( https://liendelavideo.com )
-___
-
-
+[Lien](https://liendelavideo.com)
 
 ___
 
-# Install
+## Install
 ```sh
 git clone https://github.com/Elie-Mendy/Alyra-Projet3/tree/main
 cd Alyra-Projet3
@@ -46,18 +47,18 @@ Or in 1 line
 git clone https://github.com/Elie-Mendy/Alyra-Projet3/tree/main; cd Alyra-Projet3; yarn;
 ```
 
-#### Run Blockchain localhost:8545 (hardhat)
+##### Run Blockchain localhost:8545 (hardhat)
 ```sh
 yarn blockchain
 ```
 
-#### Run Front
+##### Run Front
 (new terminal), ctrl+shift+t
 ```sh
 yarn dapp:dev
 ```
 
-#### Run Test / Deploy contract / ...
+##### Run Test / Deploy contract / ...
 (new terminal), ctrl+shift+t
 ```sh
 yarn sc:test
@@ -67,7 +68,7 @@ yarn sc:deploy:sepolia
 ```
 ____
 
-# Create architecture
+### Create architecture
 ```shell
 mkdir Alyra-Projet3
 cd  Alyra-Projet3
@@ -82,10 +83,14 @@ Or in 1 line
 mkdir Alyra-Projet3; cd  Alyra-Projet3; mkdir hardhat-project; cd hardhat-project; npx hardhat; cd ..; npx create-next-app dapp;
 ```
 
-#### About
+___
+
+### About
   - [Workspace](https://docs.npmjs.com/cli/v7/using-npm/workspaces) is created in `./packages` for manage multi-packages node easily.
 
-#### Docs
+___
+
+### Docs
   - [NextJs](https://nextjs.org/) 
   - [Chakra-UI](https://chakra-ui.com/) 
   - [Hardhat](https://hardhat.org/) 
