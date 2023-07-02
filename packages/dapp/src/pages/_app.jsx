@@ -20,16 +20,16 @@ import { mainnet, sepolia, hardhat, polygon, polygonMumbai } from "wagmi/chains"
 import { publicProvider } from "wagmi/providers/public";
 import { infuraProvider } from '@wagmi/core/providers/infura'
 
-// import {
-//     injectedWallet,
-//     rainbowWallet,
-//     metaMaskWallet,
-//     coinbaseWallet,
-//     walletConnectWallet,
-//     ledgerWallet,
-//     argentWallet,
-//     trustWallet
-// } from '@rainbow-me/rainbowkit/wallets';
+import {
+    injectedWallet,
+    rainbowWallet,
+    metaMaskWallet,
+    coinbaseWallet,
+    walletConnectWallet,
+    ledgerWallet,
+    argentWallet,
+    trustWallet
+} from '@rainbow-me/rainbowkit/wallets';
 
 // wagmi config
 const { chains, publicClient } = configureChains(
@@ -40,32 +40,32 @@ const { chains, publicClient } = configureChains(
     ]
 );
 
-const { connectors } = getDefaultWallets({
+const { wallets } = getDefaultWallets({
     appName: process.env.NEXT_PUBLIC_WALLET_CONNECT_APPNAME,
     projectId: process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID,
     chains,
 });
 
-// const connectors = connectorsForWallets([
-//     {
-//         groupName: 'Recommended',
-//         wallets: [
-//             injectedWallet({ chains }),
-//             rainbowWallet({ projectId, chains }),
-//             metaMaskWallet({ projectId, chains }),
-//             coinbaseWallet({ chains, appName }),
-//             walletConnectWallet({ projectId, chains }),
-//         ],
-//     },
-//     {
-//         groupName: 'Others',
-//         wallets: [
-//             ledgerWallet({ projectId, chains }),
-//             argentWallet({ projectId, chains }),
-//             trustWallet({ projectId, chains })
-//         ],
-//     },
-// ])
+const connectors = connectorsForWallets([
+    ...wallets,
+    {
+        groupName: 'Others',
+        wallets: [
+            ledgerWallet({
+                projectId: process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID,
+                chains
+            }),
+            argentWallet({
+                projectId: process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID,
+                chains
+            }),
+            trustWallet({
+                projectId: process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID,
+                chains
+            })
+        ],
+    },
+])
 
 const wagmiConfig = createConfig({
     autoConnect: true,
