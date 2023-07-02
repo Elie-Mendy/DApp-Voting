@@ -14,6 +14,7 @@ import { isAddress, parseAbiItem } from "viem";
 import { useNotif } from "@/hooks/useNotif";
 
 import { config, client } from "@/config";
+import { confetti } from '@/utils';
 
 export function useVotingContract() {
     const { isConnected, address, activeConnector } = useAccount();
@@ -76,6 +77,7 @@ export function useVotingContract() {
             });
             const { hash } = await writeContract(request);
             setInfo("Voter added !");
+            confetti()
             return hash;
         } catch (err) {
             setError(err.message);
@@ -90,6 +92,7 @@ export function useVotingContract() {
             });
             const { hash } = await writeContract(request);
             setInfo("Proposals registering started !");
+            confetti()
             return hash;
         } catch (err) {
             setError(err.message);
@@ -104,6 +107,7 @@ export function useVotingContract() {
             });
             const { hash } = await writeContract(request);
             setInfo("Proposals registering ended !");
+            confetti()
             return hash;
         } catch (err) {
             setError(err.message);
@@ -118,6 +122,7 @@ export function useVotingContract() {
             });
             const { hash } = await writeContract(request);
             setInfo("Voting session started !");
+            confetti()
             return hash;
         } catch (err) {
             setError(err.message);
@@ -132,6 +137,7 @@ export function useVotingContract() {
             });
             const { hash } = await writeContract(request);
             setInfo("Voting session ended !");
+            confetti()
             return hash;
         } catch (err) {
             setError(err.message);
@@ -146,6 +152,7 @@ export function useVotingContract() {
             });
             const { hash } = await writeContract(request);
             setInfo("Votes tallied !");
+            confetti()
             return hash;
         } catch (err) {
             setError(err.message);
@@ -211,6 +218,7 @@ export function useVotingContract() {
                 args: [Number(_id)],
             });
             const { hash } = await writeContract(request);
+            confetti()
             setInfo("Has Voted !");
             return hash;
         } catch (err) {

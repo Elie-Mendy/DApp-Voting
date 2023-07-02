@@ -1,8 +1,8 @@
 # Install
 
 ```sh
-git clone https://github.com/xdrkush/starterkit-dapp.git;
-cd starterkit-dapp;
+git clone https://github.com/Elie-Mendy/Alyra-Projet3/tree/main;
+cd Alyra-Projet3;
 yarn;
 ```
 

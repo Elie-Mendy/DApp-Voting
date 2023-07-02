@@ -41,7 +41,7 @@ Result function tallyVote() -> crashed.
 in function `setVote()` and t
 ```js
 
-    uint private TmpWinningProposalID;
+uint private TmpWinningProposalID;
 
 function setVote(uint _id) external onlyVoters {
     ...
