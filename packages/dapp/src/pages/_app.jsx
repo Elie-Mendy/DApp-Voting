@@ -21,11 +21,6 @@ import { publicProvider } from "wagmi/providers/public";
 import { infuraProvider } from '@wagmi/core/providers/infura'
 
 import {
-    injectedWallet,
-    rainbowWallet,
-    metaMaskWallet,
-    coinbaseWallet,
-    walletConnectWallet,
     ledgerWallet,
     argentWallet,
     trustWallet
