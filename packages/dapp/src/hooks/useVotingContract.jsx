@@ -172,7 +172,7 @@ export function useVotingContract() {
                 logError && setError(err.message);
             }
         },
-        [setError]
+        [setError, address]
     );
     const getOneProposal = useCallback(
         async (_id) => {
