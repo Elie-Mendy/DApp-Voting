@@ -20,7 +20,7 @@ import MainLayout from "@/layouts/MainLayout";
 
 const Index = () => {
     const themeColor = useColorModeValue("blue.700", "orange.300");
-    const { isVoter, isOwner, owner } = useContext(VotingContractContext);
+    const { isVoter, isOwner, owner, address } = useContext(VotingContractContext);
 
     return (
         <MainLayout>
@@ -56,8 +56,7 @@ const Index = () => {
                             You are not a member of the organisation.
                         </Heading>
                         <Text>
-                            Consequently you can not access to the private;
-                            information
+                            Consequently you can not access the application.
                         </Text>
                         <Text>
                             (owner : {owner})

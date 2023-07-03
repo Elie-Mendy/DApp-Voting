@@ -14,7 +14,7 @@ import { isAddress, parseAbiItem } from "viem";
 import { useNotif } from "@/hooks/useNotif";
 
 import { config, client } from "@/config";
-import { confetti } from '@/utils';
+import { confetti } from "@/utils";
 
 export function useVotingContract() {
     const { isConnected, address, activeConnector } = useAccount();
@@ -33,7 +33,9 @@ export function useVotingContract() {
     const [proposalsLogs, setProposalsLogs] = useState([]);
     const [votersLogs, setVotersLogs] = useState([]);
     const [votesLogs, setVotesLogs] = useState([]);
-    const [workflowStatusChangeLogs, setWorkflowStatusChangeLogs] = useState([]);
+    const [workflowStatusChangeLogs, setWorkflowStatusChangeLogs] = useState(
+        []
+    );
 
     // TableData
     const [votersTableData, setVotersTableData] = useState([]);
@@ -75,7 +77,7 @@ export function useVotingContract() {
             });
             const { hash } = await writeContract(request);
             setInfo("Voter added !");
-            confetti()
+            confetti();
             return hash;
         } catch (err) {
             setError(err.message);
@@ -90,7 +92,7 @@ export function useVotingContract() {
             });
             const { hash } = await writeContract(request);
             setInfo("Proposals registering started !");
-            confetti()
+            confetti();
             return hash;
         } catch (err) {
             setError(err.message);
@@ -105,7 +107,7 @@ export function useVotingContract() {
             });
             const { hash } = await writeContract(request);
             setInfo("Proposals registering ended !");
-            confetti()
+            confetti();
             return hash;
         } catch (err) {
             setError(err.message);
@@ -120,7 +122,7 @@ export function useVotingContract() {
             });
             const { hash } = await writeContract(request);
             setInfo("Voting session started !");
-            confetti()
+            confetti();
             return hash;
         } catch (err) {
             setError(err.message);
@@ -135,7 +137,7 @@ export function useVotingContract() {
             });
             const { hash } = await writeContract(request);
             setInfo("Voting session ended !");
-            confetti()
+            confetti();
             return hash;
         } catch (err) {
             setError(err.message);
@@ -150,7 +152,7 @@ export function useVotingContract() {
             });
             const { hash } = await writeContract(request);
             setInfo("Votes tallied !");
-            confetti()
+            confetti();
             return hash;
         } catch (err) {
             setError(err.message);
@@ -203,7 +205,7 @@ export function useVotingContract() {
             });
             const { hash } = await writeContract(request);
             setInfo("Proposal added !");
-            confetti()
+            confetti();
             return hash;
         } catch (err) {
             setError(err.message);
@@ -219,7 +221,7 @@ export function useVotingContract() {
                 args: [Number(_id)],
             });
             const { hash } = await writeContract(request);
-            confetti()
+            confetti();
             setInfo("Has Voted !");
             return hash;
         } catch (err) {
@@ -236,10 +238,13 @@ export function useVotingContract() {
                 event: parseAbiItem(
                     "event VoterRegistered(address voterAddress)"
                 ),
-                fromBlock: BigInt(Number(await client.getBlockNumber()) - 25001),
+                fromBlock: BigInt(
+                    Number(await client.getBlockNumber()) - 15000
+                ),
+
                 toBlock: "latest",
             });
-            console.log('VoterRegisteredLogs', VoterRegisteredLogs)
+            console.log("VoterRegisteredLogs", VoterRegisteredLogs);
             const processedVoters = await Promise.all(
                 VoterRegisteredLogs.map(async (log) => {
                     const result = await getVoter(log.args.voterAddress);
@@ -261,7 +266,7 @@ export function useVotingContract() {
             const parsedVoters = processedVoters.filter(
                 (voter) => voter.address == address
             );
-            console.log('parsedVoters', parsedVoters)
+            console.log("parsedVoters", parsedVoters);
             if (parsedVoters.length > 0) {
                 setIsVoter(parsedVoters[0].isRegistered);
                 setHasVoted(parsedVoters[0].hasVoted);
@@ -278,6 +283,7 @@ export function useVotingContract() {
             address: config.contracts.voting.address,
             event: parseAbiItem("event ProposalRegistered(uint proposalId)"),
             fromBlock: BigInt(Number(await client.getBlockNumber()) - 15000),
+
             toBlock: "latest",
         });
         const processedProposals = await Promise.all(
@@ -299,6 +305,7 @@ export function useVotingContract() {
             address: config.contracts.voting.address,
             event: parseAbiItem("event Voted(address voter, uint proposalId)"),
             fromBlock: BigInt(Number(await client.getBlockNumber()) - 15000),
+
             toBlock: "latest",
         });
         setVotesLogs(VotesLogs);
@@ -310,6 +317,7 @@ export function useVotingContract() {
                 "event WorkflowStatusChange(uint8 previousStatus, uint8 newStatus)"
             ),
             fromBlock: BigInt(Number(await client.getBlockNumber()) - 15000),
+
             toBlock: "latest",
         });
         setWorkflowStatusChangeLogs(WorkflowStatusChangeLogs);
